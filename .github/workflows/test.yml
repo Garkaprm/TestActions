@@ -42,11 +42,6 @@ jobs:
         env:
           update: true
 
-      - name: Install NodeJS
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.16.0
-
       - name: Install phpunit 5.x on PHP 5.6
         if: ${{ matrix.php-versions == '5.6' }}
         run: |
@@ -57,15 +52,3 @@ jobs:
         run: |
           composer global require --dev phpunit/phpunit ^6 -q --prefer-dist --no-progress --ansi --no-interaction --no-suggest
           phpunit --version
-      - name: Set up tests config
-        run: |
-          cp index.php
-          sed -i "s/youremptytestdbnamehere/${{ env.DB_DATABASE }}/" index.php
-          sed -i "s/yourusernamehere/${{ env.DB_USER }}/" index.php
-          sed -i "s/yourpasswordhere/${{ env.DB_PASSWORD }}/" index.php
-          sed -i "s/localhost/${{ env.DB_HOST }}:${{ job.services.mysql.ports['3306'] }}/" index.php
-      - name: Upload build artifact (TEMP)
-        uses: actions/upload-artifact@v2
-        with:
-          name: wp-${{ matrix.wp-versions }}-php-${{ matrix.php-versions }}
-          path: index.php
