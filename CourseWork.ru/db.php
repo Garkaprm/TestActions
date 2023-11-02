@@ -148,7 +148,7 @@
                     <tr>
                         <td>
                             <br>
-                            <div style="font-size: xx-large; text-align: center">Меню</div>
+                            <div style="font-size: xx-large; text-align: center">МенюТест</div>
                         </td>
                     </tr>
                     <tr>
