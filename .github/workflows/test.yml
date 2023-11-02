@@ -42,13 +42,6 @@ jobs:
         env:
           update: true
 
-      - name: Cache Composer dependencies
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
       - name: Install NodeJS
         uses: actions/setup-node@v1
         with:
