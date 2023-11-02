@@ -1,4 +1,4 @@
-name: PHP Composer
+name: Test
 
 on:
   push:
@@ -6,18 +6,24 @@ on:
   pull_request:
     branches: [ "main" ]
 
-permissions:
-  contents: read
-
 jobs:
   build:
 
     runs-on: windows 2022
-
+    env:
+      php-ini-values: post_max_size=256M
+      DB_DATABASE: courseworkDB
+      DB_USER: root
+      DB_PASSWORD: ''
+      DB_HOST: localhost
     steps:
     - uses: actions/checkout@v3
     - uses: mirromutth/mysql-action@v1.1
 
+    - name: Create MySQL Database
+      run: |
+        sudo apt-get update && sudo apt-get install -y mysql-client
+    
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
@@ -32,9 +38,3 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
-
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
-    # - name: Run test suite
-    #   run: composer run-script test
