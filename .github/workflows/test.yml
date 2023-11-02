@@ -59,7 +59,7 @@ jobs:
           phpunit --version
       - name: Set up tests config
         run: |
-          cp New_table_db.php index.php
+          cp index.php
           sed -i "s/youremptytestdbnamehere/${{ env.DB_DATABASE }}/" index.php
           sed -i "s/yourusernamehere/${{ env.DB_USER }}/" index.php
           sed -i "s/yourpasswordhere/${{ env.DB_PASSWORD }}/" index.php
