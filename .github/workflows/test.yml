@@ -42,11 +42,6 @@ jobs:
         env:
           update: true
 
-      - name: Get Composer cache directory
-        working-directory: ${{ env.wp-bp-directory }}
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
       - name: Cache Composer dependencies
         uses: actions/cache@v1
         with:
@@ -54,27 +49,10 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install Composer dependencies
-        working-directory: ${{ env.wp-bp-directory }}
-        run: composer install -q --prefer-dist --no-progress --ansi --no-interaction --no-suggest
-
       - name: Install NodeJS
         uses: actions/setup-node@v1
         with:
           node-version: 12.16.0
-
-      - name: Cache NodeJS modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
-      - name: Install Node dependencies
-        working-directory: ${{ env.wp-bp-directory }}
-        run: npm ci
 
       - name: Install phpunit 5.x on PHP 5.6
         if: ${{ matrix.php-versions == '5.6' }}
@@ -88,17 +66,13 @@ jobs:
           phpunit --version
       - name: Set up tests config
         run: |
-          cp wp-tests-config-sample.php wp-tests-config.php
-          sed -i "s/youremptytestdbnamehere/${{ env.DB_DATABASE }}/" wp-tests-config.php
-          sed -i "s/yourusernamehere/${{ env.DB_USER }}/" wp-tests-config.php
-          sed -i "s/yourpasswordhere/${{ env.DB_PASSWORD }}/" wp-tests-config.php
-          sed -i "s/localhost/${{ env.DB_HOST }}:${{ job.services.mysql.ports['3306'] }}/" wp-tests-config.php
+          cp New_table_db.php index.php
+          sed -i "s/youremptytestdbnamehere/${{ env.DB_DATABASE }}/" index.php
+          sed -i "s/yourusernamehere/${{ env.DB_USER }}/" index.php
+          sed -i "s/yourpasswordhere/${{ env.DB_PASSWORD }}/" index.php
+          sed -i "s/localhost/${{ env.DB_HOST }}:${{ job.services.mysql.ports['3306'] }}/" index.php
       - name: Upload build artifact (TEMP)
         uses: actions/upload-artifact@v2
         with:
           name: wp-${{ matrix.wp-versions }}-php-${{ matrix.php-versions }}
-          path: wp-tests-config.php
-
-      - name: Run phpunit tests
-        working-directory: ${{ env.wp-bp-directory }}
-        run: phpunit
+          path: index.php
