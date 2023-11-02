@@ -1,40 +1,104 @@
-name: Test
+name: Tests
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [ push ]
 
 jobs:
-  build:
+  tests:
 
-    runs-on: windows 2022
+    runs-on: ubuntu-20.04
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    strategy:
+      matrix:
+        wp-versions: [ 5.6 ]
+        php-versions: [ 7.4 ]
+
+    name: WP ${{ matrix.wp-versions }} on PHP ${{ matrix.php-versions }}
+
     env:
       php-ini-values: post_max_size=256M
+      wp-bp-directory: src/wp-content/plugins/buddypress
       DB_DATABASE: courseworkDB
       DB_USER: root
       DB_PASSWORD: ''
       DB_HOST: localhost
+
     steps:
-    - uses: actions/checkout@v3
-    - uses: mirromutth/mysql-action@v1.1
+      - run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE courseworkDB;' -uroot -proot
+          mysql -e 'SHOW DATABASES;' -uroot -proot
+      - name: Cancel previous runs of this workflow
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
 
-    - name: Create MySQL Database
-      run: |
-        sudo apt-get update && sudo apt-get install -y mysql-client
-    
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          tools: pecl
+          php-version: ${{ matrix.php-versions }}
+          ini-values: ${{ env.php-ini-values }}
+        env:
+          update: true
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Get Composer cache directory
+        working-directory: ${{ env.wp-bp-directory }}
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      - name: Cache Composer dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        working-directory: ${{ env.wp-bp-directory }}
+        run: composer install -q --prefer-dist --no-progress --ansi --no-interaction --no-suggest
+
+      - name: Install NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.16.0
+
+      - name: Cache NodeJS modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Install Node dependencies
+        working-directory: ${{ env.wp-bp-directory }}
+        run: npm ci
+
+      - name: Install phpunit 5.x on PHP 5.6
+        if: ${{ matrix.php-versions == '5.6' }}
+        run: |
+          composer global require --dev phpunit/phpunit ^5 -q --prefer-dist --no-progress --ansi --no-interaction --no-suggest
+          phpunit --version
+      - name: Install phpunit 6.x on PHP 7.4
+        if: ${{ matrix.php-versions == '7.4' }}
+        run: |
+          composer global require --dev phpunit/phpunit ^6 -q --prefer-dist --no-progress --ansi --no-interaction --no-suggest
+          phpunit --version
+      - name: Set up tests config
+        run: |
+          cp wp-tests-config-sample.php wp-tests-config.php
+          sed -i "s/youremptytestdbnamehere/${{ env.DB_DATABASE }}/" wp-tests-config.php
+          sed -i "s/yourusernamehere/${{ env.DB_USER }}/" wp-tests-config.php
+          sed -i "s/yourpasswordhere/${{ env.DB_PASSWORD }}/" wp-tests-config.php
+          sed -i "s/localhost/${{ env.DB_HOST }}:${{ job.services.mysql.ports['3306'] }}/" wp-tests-config.php
+      - name: Upload build artifact (TEMP)
+        uses: actions/upload-artifact@v2
+        with:
+          name: wp-${{ matrix.wp-versions }}-php-${{ matrix.php-versions }}
+          path: wp-tests-config.php
+
+      - name: Run phpunit tests
+        working-directory: ${{ env.wp-bp-directory }}
+        run: phpunit
