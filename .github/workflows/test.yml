@@ -1,54 +1,27 @@
-name: Tests
+on:
+  - pull_request
+  - push
 
-on: [ push ]
+name: build
 
 jobs:
   tests:
-
-    runs-on: ubuntu-20.04
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-
-    strategy:
-      matrix:
-        wp-versions: [ 5.6 ]
-        php-versions: [ 7.4 ]
-
-    name: WP ${{ matrix.wp-versions }} on PHP ${{ matrix.php-versions }}
-
-    env:
-      php-ini-values: post_max_size=256M
-      wp-bp-directory: src/wp-content/plugins/buddypress
-      DB_DATABASE: courseworkDB
-      DB_USER: root
-      DB_PASSWORD: ''
-      DB_HOST: localhost
-
-    steps:
-      - run: |
-          sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE courseworkDB;' -uroot -proot
-          mysql -e 'SHOW DATABASES;' -uroot -proot
-      - name: Cancel previous runs of this workflow
-        uses: styfle/cancel-workflow-action@0.6.0
-        with:
-          access_token: ${{ github.token }}
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          tools: pecl
-          php-version: ${{ matrix.php-versions }}
-          ini-values: ${{ env.php-ini-values }}
+    runs-on: windows
+    name: example
+    services:
+      mysql:
+        image: mysql:5.7
         env:
-          update: true
-
-      - name: Install phpunit 5.x on PHP 5.6
-        if: ${{ matrix.php-versions == '5.6' }}
+          MYSQL_USER: root
+          MYSQL_PASSWORD: ''
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_DATABASE: coursework
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      
+      - name: Create MySQL Database
         run: |
-          composer global require --dev phpunit/phpunit ^5 -q --prefer-dist --no-progress --ansi --no-interaction --no-suggest
-          phpunit --version
-      - name: Install phpunit 6.x on PHP 7.4
-        if: ${{ matrix.php-versions == '7.4' }}
-        run: |
-          composer global require --dev phpunit/phpunit ^6 -q --prefer-dist --no-progress --ansi --no-interaction --no-suggest
-          phpunit --version
+          sudo apt-get update && sudo apt-get install -y mysql-client
+          mysql --host 127.0.0.1 --port $ -uroot -proot -e 'CREATE SCHEMA `coursework` CHARACTER SET utf8 COLLATE utf8_general_ci; GRANT ALL ON `coursework`.* TO root@localhost IDENTIFIED BY "root"; FLUSH PRIVILEGES;'
