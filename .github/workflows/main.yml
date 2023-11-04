@@ -1,0 +1,22 @@
+name: CI-CD-DataBase
+env:
+  TEST : "test"
+
+on: 
+  push:
+    branches: 
+      - main
+
+jobs:
+  my_ci_part:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Git clone our repo
+      uses: actions/checkout@v3
+       
+    - name: MySQL Version
+      run: mysql --vesion
+    
+    - name: Print Happy Message for CI finish
+      run : echo "CI Pipeline part Finished successfully!"
