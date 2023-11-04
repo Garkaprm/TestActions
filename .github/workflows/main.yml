@@ -14,6 +14,9 @@ jobs:
     steps:
     - name: Git clone our repo
       uses: actions/checkout@v3
+
+    - name: MySQL Install
+      run: apt install mysql-server
        
     - name: MySQL Version
       run: mysql --V
