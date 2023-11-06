@@ -36,12 +36,12 @@ jobs:
     - name: Run 'Liquibase status' in a Docker Container	    
       uses: docker://liquibase/liquibase:latest
       with:
-        args: --url="jdbc:mysql://127.0.0.1:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} status --verbose
+        args: --driver=com.mysql.cj.jdbc.Driver --url="jdbc:mysql://127.0.0.1:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} status --verbose
     
     - name: Run 'Liquibase update' in a Docker Container
       uses: docker://liquibase/liquibase:latest
       with:
-        args: --url="jdbc:mysql://127.0.0.1:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} --logLevel=debug update
+        args: --driver=com.mysql.cj.jdbc.Driver --url="jdbc:mysql://127.0.0.1:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} --logLevel=debug update
     
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
