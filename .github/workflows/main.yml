@@ -33,15 +33,15 @@ jobs:
         mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
         echo '---------------------------------'
 
-    - uses: actions/checkout@v2
-    - uses: liquibase/liquibase-github-action@v7
+    - name: Run 'Liquibase status' in a Docker Container	    
+      uses: docker://liquibase/liquibase:latest
       with:
-        operation: 'update'
-        classpath: 'example/changelogs'
-        changeLogFile: 'coursework.sql'
-        username: ${{ env.DB_USER }}
-        password: ${{ env.DB_PASSWORD }}
-        url: 'jdbc:mysql://127.0.0.1:3306/coursework'
+        args: --url="jdbc:h2:mem:liquibase_dev" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} status --verbose
+    
+    - name: Run 'Liquibase update' in a Docker Container
+      uses: docker://liquibase/liquibase:latest
+      with:
+        args: --url="jdbc:h2:mem:liquibase_dev" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} --logLevel=debug update
 
     #- uses: liquibase-github-actions/status@v4.24.0 liquibase/liquibase-github-action@v1
      # with:
