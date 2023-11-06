@@ -28,11 +28,11 @@ jobs:
     - name: Import DB
       run: |
         mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-        #mysql -e 'use ${{ env.DB_DATABASE }}; ${{ env.DB_DATABASE }} < coursework.sql; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
         echo '---------------------------------'
         mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} ${{ env.DB_DATABASE }} < coursework.sql
         mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
         echo '---------------------------------'
+        
     
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
