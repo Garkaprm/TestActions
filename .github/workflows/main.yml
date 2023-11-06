@@ -27,6 +27,7 @@ jobs:
 
     - name: Import DB
       run: |
+        mysql
         use coursework
         source coursework.sql
     
