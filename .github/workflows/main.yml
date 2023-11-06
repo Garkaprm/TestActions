@@ -1,36 +1,67 @@
-name: CI-CD-DataBase
-env:
-  TEST : "test"
+name: Liquibase Migrations
 
-on: 
-  push:
-    branches: 
-      - main
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
-  my_ci_part:
-    runs-on: windows #ubuntu-latest
-
-    steps:
-    - name: Git clone our repo
-      uses: actions/checkout@v3
-
-    - name: MySQL Install
-      uses: shogo82148/actions-setup-mysql@v1.3.0
-      with:
-        mysql-version: '8.0'
-        auto-start: true
-    - name: create test database
-      run: mysql -h 127.0.0.1 -P 3306 -u root -e 'CREATE DATABASE test_db;'
-    - name: show databases
-      run: mysql -h 127.0.0.1 -P 3306 -u root -e 'SHOW DATABASES;'
-    - name: setup user
-      run: mysql -h 127.0.0.1 -P 3306 -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';"
-    - name: flush privileges
-      run: mysql -h 127.0.0.1 -P 3306 -u root -e 'FLUSH PRIVILEGES' -ppassword
-
-    - name: MySQL Version
-      run: mysql --version
+  build:
+    runs-on: ubuntu-latest
+     # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        
+        # Docker Hub image
+        image: postgres:latest
+        
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER:  ${{ secrets.USERNAME}}
+          POSTGRES_PASSWORD: ${{ secrets.PASSWORD}}
+          POSTGRES_DB: test2
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+       
     
-    - name: Print Happy Message for CI finish
-      run : echo "CI Pipeline part Finished successfully!"
+    steps:
+         
+        - uses: actions/checkout@v3
+        - uses: liquibase-github-actions/status@v4.24.0
+          with:
+            changelogFile: "coursework.sql"
+            url: "jdbc:postgresql://postgres:5432/test2"
+            headless: true
+            username: ${{ secrets.USERNAME }}
+            password: ${{ secrets.PASSWORD }}
+            logLevel: INFO
+        - uses: liquibase-github-actions/update@v4.24.0
+          with:
+                  
+            classpath: ""
+            changeLogFile: "coursework.sql"
+            username: 'root'
+            password: ''
+            url: "jdbc:mysql://mysql:5432/coursework"
+            logLevel: INFO
+            #logFile: "src/main/resources/changelogs/liquibase.txt"
+            #databaseChangeLogTableName:  "src/main/resources/changelogs/database_changelog.txt"
+            #databaseChangeLogLockTableName:  "src/main/resources/changelogs/database_changelog_lockt.txt"
+        
+        #- uses: liquibase-github-actions/generate-changelog@v4.24.0
+          #with:
+            #username: ${{ secrets.USERNAME }}
+            #password: ${{ secrets.PASSWORD }}
+            #url: "jdbc:postgresql://postgres:5432/test"
+            #headless: true          
+            #logLevel: INFO
+
+       
+        
