@@ -19,8 +19,8 @@ jobs:
 
     - name: Set up MySQL
       run: |
-        sudo /etc/init.d/mysql stop #start
-        #mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        sudo /etc/init.d/mysql start
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
 
     - name: Install Liquibase
       run: |
@@ -30,16 +30,16 @@ jobs:
         sudo apt-get update
         sudo apt-get install liquibase
 
-    - name: DB
-      uses: mirromutth/mysql-action@v1.1
-      with:
-        host port: 3306 
-        container port: 3306 
-        character set server: 'utf8' 
-        collation server: 'utf8_general_ci' 
-        mysql version: '8.0' 
-        mysql database: 'coursework' 
-        mysql root password: ${{ env.DB_PASSWORD }} 
+    #- name: DB
+    #  uses: mirromutth/mysql-action@v1.1
+    #  with:
+    #    host port: 3306 
+    #    container port: 3306 
+    #    character set server: 'utf8' 
+    #    collation server: 'utf8_general_ci' 
+    #    mysql version: '8.0' 
+    #    mysql database: 'coursework' 
+    #    mysql root password: ${{ env.DB_PASSWORD }} 
 
     - name: Import DB
       run: |
