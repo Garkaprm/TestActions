@@ -32,7 +32,11 @@ jobs:
       run: mysql --version
 
     - name: Import DB
-      run: mysql -uroot -12345qwer coursework < coursework.sql
+      run: |
+        mysql --user=root --password=12345qwer
+        CREATE DATABASE coursework;
+        use coursework
+        source coursework.sql
     
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
