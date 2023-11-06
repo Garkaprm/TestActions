@@ -36,7 +36,7 @@ jobs:
     - uses: liquibase-github-actions/status@v4.24.0
       with:
             changelogFile: "coursework.sql"
-            url: "" #"jdbc:mysql://localhost:3306/coursework"
+            url: "jdbc:mysql://127.0.0.1:3306/coursework"
             headless: true
             username: ${{ env.DB_USER }}
             password: ${{ env.DB_PASSWORD }}
