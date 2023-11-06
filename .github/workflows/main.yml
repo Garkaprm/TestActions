@@ -39,13 +39,7 @@ jobs:
         echo '---------------------------------'
         mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} ${{ env.DB_DATABASE }} < coursework.sql
         mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-        echo '---------------------------------'
-
-    - name: Create Linqibase File
-      run: |
-        echo '<?xml version="1.0" encoding="UTF-8"?> <!--db.changelog.xml--> <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" \
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog \
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"> </databaseChangeLog>' > db.changelog.xml  
+        echo '---------------------------------' 
 
     - name: Install mysql driver
       run: |
@@ -67,5 +61,5 @@ jobs:
       with:
           add: 'mysql.changelog.sql' 
      
-    - name: Print Happy Message for CI finish
-      run : echo "CI Pipeline part Finished successfully!"
+    - name: Complete finish
+      run : echo "Complete successfully!"
