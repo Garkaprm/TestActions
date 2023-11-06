@@ -28,8 +28,7 @@ jobs:
     - name: Import DB
       run: |
         mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-        mysql -e 'SHOW DATABASES'
-        #mysql -e 'use ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
         #mysql -e 'show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
         #mysql -e 'use coursework'
         #mysql -e 'show tables'
