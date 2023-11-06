@@ -17,9 +17,7 @@ jobs:
         
         # Provide the password for postgres
         env:
-          MYSQL_ROOT_PASSWORD: ''
-          MYSQL_ALLOW_EMPTY_PASSWORD: ''
-          MYSQL_RANDOM_ROOT_PASSWORD: ''
+          MYSQL_ROOT_PASSWORD: '12345qwe'
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -40,7 +38,7 @@ jobs:
             url: "jdbc:mysql://mysql:5432/test2"
             headless: true
             username: 'root'
-            password: ''
+            password: '12345qwe'
             logLevel: INFO
         - uses: liquibase-github-actions/update@v4.24.0
           with:
@@ -48,7 +46,7 @@ jobs:
             classpath: ""
             changeLogFile: "coursework.sql"
             username: 'root'
-            password: ''
+            password: '12345qwe'
             url: "jdbc:mysql://mysql:5432/coursework"
             logLevel: INFO
             #logFile: "src/main/resources/changelogs/liquibase.txt"
