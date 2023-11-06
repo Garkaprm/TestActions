@@ -30,6 +30,9 @@ jobs:
 
     - name: MySQL Version
       run: mysql --version
+
+    - name: Import DB
+      run: mysql -uroot -12345qwer coursework < coursework.sql
     
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
