@@ -13,7 +13,7 @@ jobs:
       postgres:
         
         # Docker Hub image
-        image: postgres:latest
+        image: mysql:latest
         
         # Provide the password for postgres
         env:
@@ -37,10 +37,10 @@ jobs:
         - uses: liquibase-github-actions/status@v4.24.0
           with:
             changelogFile: "coursework.sql"
-            url: "jdbc:postgresql://postgres:5432/test2"
+            url: "jdbc:mysql://mysql:5432/test2"
             headless: true
-            username: ${{ secrets.USERNAME }}
-            password: ${{ secrets.PASSWORD }}
+            username: 'root'
+            password: ''
             logLevel: INFO
         - uses: liquibase-github-actions/update@v4.24.0
           with:
