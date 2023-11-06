@@ -28,7 +28,6 @@ jobs:
     - name: Import DB
       run: |
         mysql -u root -p
-        root
         use coursework
         source coursework.sql
     
