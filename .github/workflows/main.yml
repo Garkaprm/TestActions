@@ -17,9 +17,9 @@ jobs:
         
         # Provide the password for postgres
         env:
-          POSTGRES_USER:  ${{ secrets.USERNAME}}
-          POSTGRES_PASSWORD: ${{ secrets.PASSWORD}}
-          POSTGRES_DB: test2
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_ALLOW_EMPTY_PASSWORD: ''
+          MYSQL_RANDOM_ROOT_PASSWORD: ''
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
