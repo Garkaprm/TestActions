@@ -31,6 +31,7 @@ jobs:
 
     - name: Import DB
       run: |
+        service mysql start
         mysql --user=root --password=12345qwer
         #CREATE DATABASE coursework;
         use coursework
