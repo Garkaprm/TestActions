@@ -38,10 +38,10 @@ jobs:
       with:
         args: --url="jdbc:h2:mem:liquibase_dev" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} status --verbose
     
-    - name: Run 'Liquibase update' in a Docker Container
-      uses: docker://liquibase/liquibase:latest
-      with:
-        args: --url="jdbc:h2:mem:liquibase_dev" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} --logLevel=debug update
+    #- name: Run 'Liquibase update' in a Docker Container
+     # uses: docker://liquibase/liquibase:latest
+      #with:
+       # args: --url="jdbc:h2:mem:liquibase_dev" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} --logLevel=debug update
 
     #- uses: liquibase-github-actions/status@v4.24.0 liquibase/liquibase-github-action@v1
      # with:
