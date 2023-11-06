@@ -33,6 +33,14 @@ jobs:
         mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
         echo '---------------------------------'
 
+    - name: Build extension-jdbc-mysql with Ant
+      run: ant -noinput -verbose -buildfile build.xml
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mysql-lex
+        path: dist/*.lex
+
     - uses: liquibase-github-actions/status@v4.24.0
       with:
             changelogFile: "coursework.sql"
@@ -41,7 +49,6 @@ jobs:
             username: ${{ env.DB_USER }}
             password: ${{ env.DB_PASSWORD }}
             logLevel: INFO    
-            driver: com.mysql.cj.jdbc.Driver
     
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
