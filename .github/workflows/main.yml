@@ -48,16 +48,17 @@ jobs:
       run: |
         sudo apt update
         sudo apt install libmariadb-java
-        cp /usr/share/java/mariadb-java-client.jar ..
+        cp /usr/share/java/mariadb-java-client.jar .. 
     
     - name: start Liquibase
       run: |
         liquibase init project \
-        --driver=com.mysql.jdbc.Driver \
+        --changelog-file=mysql.changelog.sql \
+        --format=sql \
         --url=jdbc:mysql://localhost:3306/coursework \
         --username=${{ env.DB_USER }} \
-        --password=${{ env.DB_PASSWORD }} \
-        --changeLogFile=mysql.changelog.xml 
+        --password=${{ env.DB_PASSWORD }}
+         
      
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
