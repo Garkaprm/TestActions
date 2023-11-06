@@ -30,17 +30,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install liquibase
 
-    #- name: DB
-    #  uses: mirromutth/mysql-action@v1.1
-    #  with:
-    #    host port: 3306 
-    #    container port: 3306 
-    #    character set server: 'utf8' 
-    #    collation server: 'utf8_general_ci' 
-    #    mysql version: '8.0' 
-    #    mysql database: 'coursework' 
-    #    mysql root password: ${{ env.DB_PASSWORD }} 
-
     - name: Import DB
       run: |
         mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
@@ -54,6 +43,12 @@ jobs:
         echo '<?xml version="1.0" encoding="UTF-8"?> <!--db.changelog.xml--> <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" \
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog \
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"> </databaseChangeLog>' > db.changelog.xml  
+
+    - name: Install mysql driver
+      run: |
+        sudo apt-add-repository universe
+        sudo apt-get update
+        sudo apt-get install libmysql-java
     
     - name: start Liquibase
       run: |
