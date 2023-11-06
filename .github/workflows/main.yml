@@ -33,15 +33,15 @@ jobs:
     #    mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
     #    echo '---------------------------------'
 
-    - name: Run 'Liquibase status' in a Docker Container	    
+    - name: Run 'Liquibase status' in a Docker Container	
       uses: docker://liquibase/liquibase:latest
       with:
-        args: --driver=com.mysql.jdbc.Driver --url="jdbc:mysql://127.0.0.1:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} status --verbose
+        args: --url="jdbc:mysql://mysql:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} status --verbose
     
     - name: Run 'Liquibase update' in a Docker Container
       uses: docker://liquibase/liquibase:latest
       with:
-        args: --driver=com.mysql.jdbc.Driver --url="jdbc:mysql://127.0.0.1:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} --logLevel=debug update
+        args: --url="jdbc:mysql://mysql:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} --logLevel=debug update
     
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
