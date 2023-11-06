@@ -1,65 +1,35 @@
-name: Liquibase Migrations
+name: CI-CD-DataBase
+env:
+  TEST : "test"
 
-on:
+on: 
   push:
-      branches: [ "main" ]
+    branches: 
+      - main
 
 jobs:
-  build:
+  my_ci_part:
     runs-on: ubuntu-latest
-     # Service containers to run with `container-job`
-    services:
-      # Label used to access the service container
-      mysql:
-        
-        # Docker Hub image
-        image: mysql:latest
-        
-        # Provide the password for postgres
-        env:
-          MYSQL_ROOT_PASSWORD: '12345qwe'
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps tcp port 3306 on service container to the host
-          - 3306:3306
-       
-    
-    steps:
-         
-        - uses: actions/checkout@v3
-        - uses: liquibase-github-actions/status@v4.24.0
-          with:
-            changelogFile: "src/main/resources/changelogs/coursework.sql"
-            url: "jdbc:mysql://mysql:3306/coursework"
-            headless: true
-            username: 'root'
-            password: '12345qwe'
-            logLevel: INFO
-        - uses: liquibase-github-actions/update@v4.24.0
-          with:
-                  
-            classpath: "src/main/resources/changelogs"
-            changeLogFile: "coursework.sql"
-            username: 'root'
-            password: '12345qwe'
-            url: "jdbc:mysql://mysql:3306/coursework"
-            logLevel: INFO
-            #logFile: "src/main/resources/changelogs/liquibase.txt"
-            #databaseChangeLogTableName:  "src/main/resources/changelogs/database_changelog.txt"
-            #databaseChangeLogLockTableName:  "src/main/resources/changelogs/database_changelog_lockt.txt"
-        
-        #- uses: liquibase-github-actions/generate-changelog@v4.24.0
-          #with:
-            #username: ${{ secrets.USERNAME }}
-            #password: ${{ secrets.PASSWORD }}
-            #url: "jdbc:postgresql://postgres:5432/test"
-            #headless: true          
-            #logLevel: INFO
 
-       
-        
+    steps:
+    - name: Git clone our repo
+      uses: actions/checkout@v3
+
+    - name: MySQL Install
+      uses: mirromutth/mysql-action@v1.1
+      with:
+          host port: 3306 # Optional, default value is 3800. The port of host
+          container port: 3307 # Optional, default value is 3307. The port of container
+          character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+          collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+          mysql version: '8.0' # Optional, default value is "latest". The version of the MySQL
+          mysql database: 'sh_test_db' # Optional, default value is "test". The specified database which will be create
+          mysql root password: '12345qwer' # Required if "mysql user" is empty, default is empty. The root superuser password
+          #mysql user: 'root' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+          #mysql password: '' # Required if "mysql user" exists. The password for the "mysql user"
+
+    - name: MySQL Version
+      run: mysql --version
+    
+    - name: Print Happy Message for CI finish
+      run : echo "CI Pipeline part Finished successfully!"
