@@ -52,8 +52,9 @@ jobs:
     
     - name: start Liquibase
       run: |
-        liquibase init project \ #generateChangeLog \
-        #--classpath=mariadb-java-client.jar \
+        liquibase init project \ 
+        # generateChangeLog \
+        # --classpath=mariadb-java-client.jar \
         --driver=com.mysql.jdbc.Driver \
         --url=jdbc:mysql://localhost:3306/coursework \
         --username=${{ env.DB_USER }} \
