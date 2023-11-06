@@ -25,8 +25,8 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432
+          # Maps tcp port 3306 on service container to the host
+          - 3306:3306
        
     
     steps:
@@ -35,7 +35,7 @@ jobs:
         - uses: liquibase-github-actions/status@v4.24.0
           with:
             changelogFile: "src/main/resources/changelogs/coursework.sql"
-            url: "jdbc:mysql://mysql:5432/test2"
+            url: "jdbc:mysql://mysql:3306/coursework"
             headless: true
             username: 'root'
             password: '12345qwe'
@@ -47,7 +47,7 @@ jobs:
             changeLogFile: "coursework.sql"
             username: 'root'
             password: '12345qwe'
-            url: "jdbc:mysql://mysql:5432/coursework"
+            url: "jdbc:mysql://mysql:3306/coursework"
             logLevel: INFO
             #logFile: "src/main/resources/changelogs/liquibase.txt"
             #databaseChangeLogTableName:  "src/main/resources/changelogs/database_changelog.txt"
