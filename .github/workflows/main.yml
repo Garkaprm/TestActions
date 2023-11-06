@@ -34,7 +34,7 @@ jobs:
         - uses: actions/checkout@v3
         - uses: liquibase-github-actions/status@v4.24.0
           with:
-            changelogFile: "coursework.sql"
+            changelogFile: "src/main/resources/changelogs/coursework.sql"
             url: "jdbc:mysql://mysql:5432/test2"
             headless: true
             username: 'root'
@@ -43,7 +43,7 @@ jobs:
         - uses: liquibase-github-actions/update@v4.24.0
           with:
                   
-            classpath: ""
+            classpath: "src/main/resources/changelogs"
             changeLogFile: "coursework.sql"
             username: 'root'
             password: '12345qwe'
