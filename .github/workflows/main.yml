@@ -62,7 +62,7 @@ jobs:
         --url=jdbc:mysql://localhost:3306/coursework \
         --username=${{ env.DB_USER }} \
         --password=${{ env.DB_PASSWORD }} \
-        --changeLogFile=db.changelog.xml
+        --changeLogFile=coursework.sql
      
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
