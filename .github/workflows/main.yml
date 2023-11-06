@@ -33,22 +33,24 @@ jobs:
         mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
         echo '---------------------------------'
 
-    - name: Build extension-jdbc-mysql with Ant
-      run: ant -noinput -verbose -buildfile build.xml
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+    - uses: actions/checkout@v2
+    - uses: liquibase/liquibase-github-action@v7
       with:
-        name: mysql-lex
-        path: dist/*.lex
+        operation: 'update'
+        classpath: 'example/changelogs'
+        changeLogFile: 'coursework.sql'
+        username: ${{ env.DB_USER }}
+        password: ${{ env.DB_PASSWORD }}
+        url: 'jdbc:mysql://127.0.0.1:3306/coursework'
 
-    - uses: liquibase-github-actions/status@v4.24.0
-      with:
-            changelogFile: "coursework.sql"
-            url: "jdbc:mysql://127.0.0.1:3306/coursework"
-            headless: true
-            username: ${{ env.DB_USER }}
-            password: ${{ env.DB_PASSWORD }}
-            logLevel: INFO    
+    #- uses: liquibase-github-actions/status@v4.24.0 liquibase/liquibase-github-action@v1
+     # with:
+      #      changelogFile: "coursework.sql"
+       #     url: "jdbc:mysql://127.0.0.1:3306/coursework"
+        #    headless: true
+         #   username: ${{ env.DB_USER }}
+          #  password: ${{ env.DB_PASSWORD }}
+           # logLevel: INFO    
     
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
