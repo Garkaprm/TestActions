@@ -22,38 +22,39 @@ jobs:
         sudo /etc/init.d/mysql stop #start
         #mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
 
-    - name: MySQL Version
+    - name: Install Liquibase
       run: |
-        mysql --version
         wget -O- https://repo.liquibase.com/liquibase.asc | gpg --dearmor > liquibase-keyring.gpg && \
         cat liquibase-keyring.gpg | sudo tee /usr/share/keyrings/liquibase-keyring.gpg > /dev/null && \
         echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/liquibase-keyring.gpg] https://repo.liquibase.com stable main' | sudo tee /etc/apt/sources.list.d/liquibase.list
         sudo apt-get update
         sudo apt-get install liquibase
-        
 
-
-    #- name: Import DB
-    #  run: |
-    #    mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-    #    echo '---------------------------------'
-    #    mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} ${{ env.DB_DATABASE }} < coursework.sql
-    #    mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-    #    echo '---------------------------------'
-
-    - name: Run 'Liquibase status' in a Docker Container	
+    - name: DB
       uses: mirromutth/mysql-action@v1.1
       with:
-        host port: 3306 # Optional, default value is 3306. The port of host
-        container port: 3306 # Optional, default value is 3306. The port of container
-        character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
-        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mysql version: '8.0' # Optional, default value is "latest". The version of the MySQL
-        mysql database: 'coursework' # Optional, default value is "test". The specified database which will be create
-        mysql root password: ${{ env.DB_PASSWORD }} # Required if "mysql user" is empty, default is empty. The root superuser password
-      #uses: docker://liquibase/liquibase:latest
-      #with:
-       # args: --url="jdbc:mysql://mysql:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} status --verbose
+        host port: 3306 
+        container port: 3306 
+        character set server: 'utf8' 
+        collation server: 'utf8_general_ci' 
+        mysql version: '8.0' 
+        mysql database: 'coursework' 
+        mysql root password: ${{ env.DB_PASSWORD }} 
+
+    - name: Import DB
+      run: |
+        mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        echo '---------------------------------'
+        mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} ${{ env.DB_DATABASE }} < coursework.sql
+        mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        echo '---------------------------------'
+
+    - name: Create Linqibase File
+      run: |
+        echo '<?xml version="1.0" encoding="UTF-8"?> <!--db.changelog.xml--> <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" \
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog \
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"> </databaseChangeLog>' > db.changelog.xml 
+        cat db.changelog.xml 
     
     #- name: Run 'Liquibase update' in a Docker Container
      # uses: docker://liquibase/liquibase:latest
