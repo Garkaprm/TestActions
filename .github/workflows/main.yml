@@ -41,6 +41,7 @@ jobs:
             username: ${{ env.DB_USER }}
             password: ${{ env.DB_PASSWORD }}
             logLevel: INFO    
+            driver: com.mysql.jdbc.Driver
     
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
