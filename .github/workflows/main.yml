@@ -2,7 +2,7 @@ name: CI-CD-DataBase
 env:
   DB_DATABASE: coursework
   DB_USER: root
-  #DB_PASSWORD: root
+  DB_PASSWORD: root
 
 on: 
   push:
