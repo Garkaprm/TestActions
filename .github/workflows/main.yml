@@ -20,16 +20,17 @@ jobs:
     - name: Set up MySQL
       run: |
         sudo /etc/init.d/mysql start
-        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' 
-        # -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
 
     - name: MySQL Version
       run: mysql --version
 
     - name: Import DB
       run: |
-        mysql -e 'use coursework'
-        mysql -e 'show tables'
+        mysql -e 'use ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        mysql -e 'show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        #mysql -e 'use coursework'
+        #mysql -e 'show tables'
         #mysql -u root
         #use coursework
         #source coursework.sql
