@@ -32,7 +32,15 @@ jobs:
         mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} ${{ env.DB_DATABASE }} < coursework.sql
         mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
         echo '---------------------------------'
-        
+
+    - uses: liquibase-github-actions/status@v4.24.0
+      with:
+            changelogFile: "coursework.sql"
+            url: "jdbc:mysql://localhost:3306/coursework"
+            headless: true
+            username: ${{ env.DB_USER }}
+            password: ${{ env.DB_PASSWORD }}
+            logLevel: INFO    
     
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
