@@ -27,8 +27,8 @@ jobs:
 
     - name: Import DB
       run: |
-        mysql -h 127.0.0.1 --port 3306 -u root -e 'use coursework'
-        mysql -h 127.0.0.1 --port 3306 -u root -e 'show tables'
+        mysql -e 'use coursework'
+        mysql -e 'show tables'
         #mysql -u root
         #use coursework
         #source coursework.sql
