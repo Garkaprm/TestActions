@@ -17,31 +17,31 @@ jobs:
     - name: Git clone our repo
       uses: actions/checkout@v3
 
-    - name: Set up MySQL
-      run: |
-        sudo /etc/init.d/mysql start
-        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+    #- name: Set up MySQL
+    #  run: |
+    #    sudo /etc/init.d/mysql start
+    #    mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
 
-    - name: MySQL Version
-      run: mysql --version
+    #- name: MySQL Version
+    #  run: mysql --version
 
-    - name: Import DB
-      run: |
-        mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-        echo '---------------------------------'
-        mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} ${{ env.DB_DATABASE }} < coursework.sql
-        mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-        echo '---------------------------------'
+    #- name: Import DB
+    #  run: |
+    #    mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+    #    echo '---------------------------------'
+    #    mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} ${{ env.DB_DATABASE }} < coursework.sql
+    #    mysql -e 'use ${{ env.DB_DATABASE }}; show tables;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+    #    echo '---------------------------------'
 
     - name: Run 'Liquibase status' in a Docker Container	    
       uses: docker://liquibase/liquibase:latest
       with:
-        args: --driver=com.mysql.cj.jdbc.Driver --url="jdbc:mysql://127.0.0.1:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} status --verbose
+        args: --driver=com.mysql.jdbc.Driver --url="jdbc:mysql://127.0.0.1:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} status --verbose
     
     - name: Run 'Liquibase update' in a Docker Container
       uses: docker://liquibase/liquibase:latest
       with:
-        args: --driver=com.mysql.cj.jdbc.Driver --url="jdbc:mysql://127.0.0.1:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} --logLevel=debug update
+        args: --driver=com.mysql.jdbc.Driver --url="jdbc:mysql://127.0.0.1:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} --logLevel=debug update
     
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
