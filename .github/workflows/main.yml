@@ -53,13 +53,16 @@ jobs:
       run: |
         echo '<?xml version="1.0" encoding="UTF-8"?> <!--db.changelog.xml--> <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" \
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog \
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"> </databaseChangeLog>' > db.changelog.xml 
-        cat db.changelog.xml 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"> </databaseChangeLog>' > db.changelog.xml  
     
-    #- name: Run 'Liquibase update' in a Docker Container
-     # uses: docker://liquibase/liquibase:latest
-      #with:
-       # args: --url="jdbc:mysql://mysql:3306/coursework?autoReconnect=true&useSSL=false" --changeLogFile=coursework.sql --username=${{ env.DB_USER }} --password=${{ env.DB_PASSWORD }} --logLevel=debug update
-    
+    - name: start Liquibase
+      run: |
+        liquibase generateChangeLog \
+        --driver=com.mysql.jdbc.Driver \
+        --url=jdbc:mysql://localhost:3306/coursework \
+        --username=${{ env.DB_USER }} \
+        --password=${{ env.DB_PASSWORD }} \
+        --changeLogFile=db.changelog.xml
+     
     - name: Print Happy Message for CI finish
       run : echo "CI Pipeline part Finished successfully!"
