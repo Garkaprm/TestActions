@@ -58,7 +58,7 @@ jobs:
 
     - name: start Liquibase
       run: |
-        liquibase changelog \
+        liquibase generate-changelog \
         --changelog-file=mysql.changelog.sql \
         --url=jdbc:mysql://localhost:3306/coursework \
         --username=${{ env.DB_USER }} \
