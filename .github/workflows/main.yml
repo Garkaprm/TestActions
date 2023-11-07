@@ -46,9 +46,6 @@ jobs:
     #    sudo apt update
     #    sudo apt install libmariadb-java
     #    cp /usr/share/java/mariadb-java-client.jar .. 
-
-    - name: ls
-      run: ls /usr/share/java/mariadb-java-client.jar
     
     - name: start Liquibase
       run: |
