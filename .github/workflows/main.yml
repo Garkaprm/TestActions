@@ -49,6 +49,7 @@ jobs:
 
     - name: Install jdbc driver
       run: |
+        sudo apt update
         sudo apt-get update && sudo apt-get dist-upgrade
         sudo apt-get install mysql-client
         sudo apt install mysql-connector-j_8.2.0-1ubuntu23.10_all.deb
