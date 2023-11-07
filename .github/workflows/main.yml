@@ -46,11 +46,14 @@ jobs:
     #    sudo apt update
     #    sudo apt install libmariadb-java
     #    cp /usr/share/java/mariadb-java-client.jar .. 
+
+    - name: Install jdbc driver
+      run: sudo apt install mysql-connector-j_8.2.0-1ubuntu23.10_all.deb
     
     - name: start Liquibase
       run: |
         liquibase update \
-        --classpath=mysql-connector-j_8.2.0-1ubuntu23.10_all.deb \
+        #--classpath=mysql-connector-j_8.2.0-1ubuntu23.10_all.deb \
         --driver=com.mysql.jdbc.Driver \
         --changelog-file=mysql.changelog.sql \
         --url=jdbc:mysql://localhost:3306/coursework \
