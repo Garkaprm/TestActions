@@ -49,7 +49,7 @@ jobs:
     
     - name: start Liquibase
       run: |
-        liquibase init project \
+        liquibase update \
         --changelog-file=mysql.changelog.sql \
         --format=sql \
         --url=jdbc:mysql://localhost:3306/coursework \
