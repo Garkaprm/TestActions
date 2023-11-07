@@ -59,7 +59,7 @@ jobs:
     - name: start Liquibase
       run: |
         liquibase generate-changelog \
-        --changelog-file=mysql.changelog.sql \
+        --changelog-file=mysql.changelog2.sql \
         --url=jdbc:mysql://localhost:3306/coursework \
         --username=${{ env.DB_USER }} \
         --password=${{ env.DB_PASSWORD }}
@@ -67,7 +67,7 @@ jobs:
     - name: Commit changes
       uses: EndBug/add-and-commit@v9.1.3
       with:
-          add: 'mysql.changelog.sql'
+          add: 'mysql.changelog2.sql'
 
     - name: Commit changes2
       uses: EndBug/add-and-commit@v9.1.3
