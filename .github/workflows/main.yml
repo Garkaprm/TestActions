@@ -48,7 +48,10 @@ jobs:
     #    cp /usr/share/java/mariadb-java-client.jar .. 
 
     - name: Install jdbc driver
-      run: sudo apt install mysql-connector-j_8.2.0-1ubuntu23.10_all.deb
+      run: |
+        sudo apt-get update && sudo apt-get dist-upgrade
+        sudo apt-get install mysql-client
+        sudo apt install mysql-connector-j_8.2.0-1ubuntu23.10_all.deb
     
     - name: start Liquibase
       run: |
