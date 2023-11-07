@@ -49,6 +49,7 @@ jobs:
 
     - name: Install jdbc driver
       run: |
+        ls
         sudo apt update
         sudo apt-get update && sudo apt-get dist-upgrade
         sudo apt-get install mysql-client
