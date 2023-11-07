@@ -57,7 +57,7 @@ jobs:
     #    --password=${{ env.DB_PASSWORD }}
 
     - name: start Liquibase
-      run: liquibase liquibase generateChangeLog
+      run: liquibase generateChangeLog
         
     - name: Commit changes
       uses: EndBug/add-and-commit@v9.1.3
