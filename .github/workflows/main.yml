@@ -59,10 +59,12 @@ jobs:
     - name: Commit changes
       uses: EndBug/add-and-commit@v9.1.3
       with:
-          add: 'mysql.changelog.sql, databasechangelog, databasechangelock, liquibase.*' 
+          add: 'mysql.changelog.sql'
 
-    - name: Commit changes
-      run: ls
+    - name: Commit changes2
+      uses: EndBug/add-and-commit@v9.1.3
+      with:
+          add: 'liquibase.*' 
      
     - name: Complete finish
       run : echo "Complete successfully!"
