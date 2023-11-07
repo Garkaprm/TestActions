@@ -47,11 +47,19 @@ jobs:
         sudo apt install libmariadb-java
         cp /usr/share/java/mariadb-java-client.jar .. 
     
+    #- name: start Liquibase
+    #  run: |
+    #    liquibase init project \
+    #    --changelog-file=mysql.changelog.sql \
+    #    --format=sql \
+    #    --url=jdbc:mysql://localhost:3306/coursework \
+    #    --username=${{ env.DB_USER }} \
+    #    --password=${{ env.DB_PASSWORD }}
+
     - name: start Liquibase
       run: |
-        liquibase init project \
+        liquibase changelog \
         --changelog-file=mysql.changelog.sql \
-        --format=sql \
         --url=jdbc:mysql://localhost:3306/coursework \
         --username=${{ env.DB_USER }} \
         --password=${{ env.DB_PASSWORD }}
