@@ -51,10 +51,10 @@ jobs:
       run: |
         liquibase update \
         --changelog-file=mysql.changelog.sql \
-        --format=sql \
         --url=jdbc:mysql://localhost:3306/coursework \
         --username=${{ env.DB_USER }} \
         --password=${{ env.DB_PASSWORD }}
+       # --format=sql \
         
     - name: Commit changes
       uses: EndBug/add-and-commit@v9.1.3
